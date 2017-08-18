@@ -29,31 +29,31 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite.SuiteClasses;
 
 @SuiteClasses({ 	
-	//Apache.class,
-	Db2.class,
-	Dv6.class,
-	Excel.class,
-	File.class,
-	//GoogleSpreadSheet.class,
-	//Greenplum.class,
-	H2.class,
-	HSql.class,
-	Informix.class,
-	Ingres10.class,
-	MariaDB.class,
-	//Modeshape.class,
-	//MongoDB.class,
-	//MySql.class,
-	//Odata.class,
-	//Oracle.class,
-	PostgreSql.class,
-	SalesForce.class,
-	SapHana.class,
-	//SapIq.class,
-	//SqlServer.class,
-	//Sybase.class,
-	//Vertica.class
+	Apache.class,
+	//Db2.class,
+	//Dv6.class,
+	//Excel.class,
+	//File.class,
+	GoogleSpreadSheet.class,
+	Greenplum.class,
+	//H2.class,
+	//HSql.class,
+	//Informix.class,
+	//Ingres10.class,
+	//MariaDB.class,
+	Modeshape.class,
+	MongoDB.class,
+	MySql.class,
+	Odata.class,
+	Oracle.class,
+	//PostgreSql.class,
+	//SalesForce.class,
+	//SapHana.class,
+	SapIq.class,
+	SqlServer.class,
+	Sybase.class,
+	Vertica.class
 })
 @RunWith(RedDeerSuite.class)
-public class TeiidJdbcTests {}
+public class TeiidJdbcTests2 {}
 
