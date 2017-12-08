@@ -51,18 +51,21 @@ public class Informix {
 		new TeiidDesignerPreferencePage(preferences).setTeiidConnectionImporterTimeout(240);
 		new ModelExplorer().importProject(PROJECT_NAME_TEIID);
 		new ModelExplorer().selectItem(PROJECT_NAME_TEIID);
-		new ServersViewExt().refreshServer(teiidServer.getName());
+		//new ServersViewExt().refreshServer(teiidServer.getName());
 		importHelper = new ImportHelper();
 	}
 	
 	@After
 	public void after(){
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + ConnectionProfileConstants.INFORMIX);
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + ConnectionProfileConstants.INFORMIX + "_DS");
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/Check_" + ConnectionProfileConstants.INFORMIX);
 		new ModelExplorer().deleteAllProjectsSafely();
 	}
 	
 	@Test
 	public void informixTeiidtest() {
-		String modelName = "informixTeiid";		
+		String modelName = "informix";
 		Map<String,String> teiidImporterProperties = new HashMap<String, String>();
 		teiidImporterProperties.put(TeiidConnectionImportWizard.IMPORT_PROPERTY_TABLE_NAME_PATTERN, "small%");
 		importHelper.importModelTeiid(PROJECT_NAME_TEIID, ConnectionProfileConstants.INFORMIX, modelName, teiidImporterProperties, teiidServer);			

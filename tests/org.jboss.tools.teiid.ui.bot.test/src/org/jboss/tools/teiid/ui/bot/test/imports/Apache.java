@@ -60,7 +60,7 @@ public class Apache {
 	@Test
 	public void apacheAccumuloTeiidtest() {
 		String modelName = "apache";
-		new ServersViewExt().deleteDatasource(teiidServer.getName(), "apacheAccumuloDS");
+		new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/apacheAccumuloDS");
 		
 		Properties apacheProps = teiidServer.getServerConfig().getConnectionProfile("apache_accumulo").asProperties();
 
@@ -86,12 +86,13 @@ public class Apache {
 				.finish();		
 		
 		importHelper.checkImportedModelTeiid(PROJECT_NAME_TEIID, modelName, "SmallA", "SmallB");
+		new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/apacheAccumuloDS");
 	}
 	
 	@Test
 	public void apacheCassandraTeiidtest() {
 		String modelName = "apache";
-		new ServersViewExt().deleteDatasource(teiidServer.getName(), "apacheCassandraDS");
+		new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/apacheCassandraDS");
 		
 		Properties apacheProps = teiidServer.getServerConfig().getConnectionProfile("apache_cassandra").asProperties();
 		
@@ -117,12 +118,13 @@ public class Apache {
 				.finish();
 			
 		importHelper.checkImportedModelTeiid(PROJECT_NAME_TEIID, modelName, "smalla", "smallb");
+		new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/apacheCassandraDS");
 	}		
 		
 	@Test
 	public void apacheSolrTeiidtest() {
 		String modelName = "apache";
-		new ServersViewExt().deleteDatasource(teiidServer.getName(), "apacheSolrDS");
+		new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/apacheSolrDS");
 		
 		Properties apacheProps = teiidServer.getServerConfig().getConnectionProfile("apache_solr").asProperties();
 
@@ -147,5 +149,6 @@ public class Apache {
 				.finish();		
 		
 		importHelper.checkImportedModelTeiid(PROJECT_NAME_TEIID, modelName, "collection1");
+		new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/apacheSolrDS");
 	}		
 }

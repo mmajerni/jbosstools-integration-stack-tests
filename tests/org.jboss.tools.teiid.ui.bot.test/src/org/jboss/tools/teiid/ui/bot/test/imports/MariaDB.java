@@ -57,6 +57,9 @@ public class MariaDB {
 	
 	@After
 	public void after(){
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + ConnectionProfileConstants.MARIADB);
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + ConnectionProfileConstants.MARIADB + "_DS");
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/Check_" + ConnectionProfileConstants.MARIADB);
 		new ModelExplorer().deleteAllProjectsSafely();
 	}
 	
@@ -71,7 +74,7 @@ public class MariaDB {
 	
 	@Test
 	public void mariaDbJDBCtest() {
-		String model = "mariadbModel";
+		String model = "mariadb";
 		importHelper.importModelJDBC(PROJECT_NAME_JDBC, model, ConnectionProfileConstants.MARIADB, "dvqe/TABLE/smalla,dvqe/TABLE/smallb", false);
 		new RelationalModelEditor(model + ".xmi").save();
 		importHelper.checkImportedTablesInModelJDBC(PROJECT_NAME_JDBC, model, "smalla", "smallb", teiidServer);

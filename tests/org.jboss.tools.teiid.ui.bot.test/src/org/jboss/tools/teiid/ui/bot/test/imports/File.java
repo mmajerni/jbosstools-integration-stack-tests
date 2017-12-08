@@ -55,7 +55,7 @@ public class File {
 	@Test
 	public void fileTeiidTest() {		
 		String modelName = "FileImported";
-		new ServersViewExt().deleteDatasource(teiidServer.getName(), "fileDS");
+		new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/fileDS");
 		
 		TeiidConnectionImportWizard.openWizard()
 				.createNewDataSource()
@@ -73,5 +73,6 @@ public class File {
 				.finish();
 		
 		importHelper.checkImportedModelTeiid(PROJECT_NAME_TEIID, modelName, "getTextFiles");
+		new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/fileDS");
 	}
 }

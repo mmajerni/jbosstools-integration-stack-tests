@@ -58,7 +58,7 @@ public class Odata {
 	@Test
 	public void odataTeiidTest() {
 		String modelName = "OdataModel";
-		new ServersViewExt().deleteDatasource(teiidServer.getName(), "odataDS");
+		new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/odataDS");
 		
 		TeiidConnectionImportWizard.openWizard()
 				.createNewDataSource()
@@ -79,5 +79,7 @@ public class Odata {
 		assertTrue(new ModelExplorer().containsItem(PROJECT_NAME_TEIID,modelName + ".xmi", "Customers"));
 		assertTrue(new ModelExplorer().containsItem(PROJECT_NAME_TEIID,modelName + ".xmi", "Customers", "CustomerID : string(5)"));
 		assertTrue(new ModelExplorer().containsItem(PROJECT_NAME_TEIID,modelName + ".xmi", "Employees", "EmployeeID : int"));
+
+		new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/odataDS");
 	}
 }

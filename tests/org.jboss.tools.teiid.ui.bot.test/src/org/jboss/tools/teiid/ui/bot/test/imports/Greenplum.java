@@ -58,6 +58,9 @@ public class Greenplum {
 	
 	@After
 	public void after(){
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + ConnectionProfileConstants.GREENPLUM);
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + ConnectionProfileConstants.GREENPLUM + "_DS");
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/Check_" + ConnectionProfileConstants.GREENPLUM);
 		new ModelExplorer().deleteAllProjectsSafely();
 	}
 	

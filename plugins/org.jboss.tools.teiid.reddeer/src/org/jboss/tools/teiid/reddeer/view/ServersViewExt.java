@@ -13,6 +13,7 @@ import org.eclipse.reddeer.eclipse.wst.server.ui.cnf.Server;
 import org.eclipse.reddeer.eclipse.wst.server.ui.cnf.ServersView2;
 import org.eclipse.reddeer.swt.api.TreeItem;
 import org.eclipse.reddeer.swt.condition.ShellIsActive;
+import org.eclipse.reddeer.swt.impl.button.OkButton;
 import org.eclipse.reddeer.swt.impl.button.PushButton;
 import org.eclipse.reddeer.swt.impl.button.RadioButton;
 import org.eclipse.reddeer.swt.impl.combo.DefaultCombo;
@@ -206,6 +207,14 @@ public class ServersViewExt extends ServersView2 {
 		new DefaultTreeItem(label).select();
 		activate();
 		new DefaultToolItem(REFRESH).click();
+        if(new ShellIsActive("Error").test()) {
+            new OkButton(new DefaultShell("Error")).click();
+            this.getServer(serverName).restart();
+
+            new DefaultTreeItem(label).select();
+            activate();
+            new DefaultToolItem(REFRESH).click();
+		}
 
 		// server was refreshed
 		new DefaultShell("Notification");

@@ -43,6 +43,8 @@ public class SapIq {
 	private static final String PROJECT_NAME_JDBC = "jdbcImportTest";
 	private static final String PROJECT_NAME_TEIID = "TeiidConnImporter";
 
+	private static final String MODEL_NAME_SAP_IQ = "sapIqModel";
+
 	@Before
 	public void before() {
 		if (new ShellMenuItem(new WorkbenchShell(), "Project", "Build Automatically").isSelected()) {
@@ -60,25 +62,27 @@ public class SapIq {
 	
 	@After
 	public void after(){
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + MODEL_NAME_SAP_IQ);
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + MODEL_NAME_SAP_IQ + "_DS");
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/Check_" + MODEL_NAME_SAP_IQ);
+
 		new ModelExplorer().deleteAllProjectsSafely();
 	}
 	
 	@Test
 	public void sapIqTeiidtest() {
-		String modelName = "sap_iq";
 		Map<String,String> teiidImporterProperties = new HashMap<String, String>();
 		teiidImporterProperties.put(TeiidConnectionImportWizard.IMPORT_PROPERTY_TABLE_NAME_PATTERN, "Small%");
-		importHelper.importModelTeiid(PROJECT_NAME_TEIID, ConnectionProfileConstants.SAP_IQ, modelName, teiidImporterProperties,TimePeriod.getCustom(120), teiidServer);		
-		importHelper.checkImportedModelTeiid(PROJECT_NAME_TEIID, modelName, "SmallA", "SmallB");
+		importHelper.importModelTeiid(PROJECT_NAME_TEIID, ConnectionProfileConstants.SAP_IQ, MODEL_NAME_SAP_IQ, teiidImporterProperties,TimePeriod.getCustom(120), teiidServer);		
+		importHelper.checkImportedModelTeiid(PROJECT_NAME_TEIID, MODEL_NAME_SAP_IQ, "SmallA", "SmallB");
 	}
 	
 	@Test
 	@Jira("TEIIDDES-3073")
 	@RunIf(conditionClass = IssueIsClosed.class)
-	public void sapIqJDBCtest() {			
-			String model = "sapiqModel";
-			importHelper.importModelJDBC(PROJECT_NAME_JDBC, model, ConnectionProfileConstants.SAP_IQ, "bqt-server/TABLE/SmallA,bqt-server/TABLE/SmallB", false);
-			importHelper.checkImportedTablesInModelJDBC(PROJECT_NAME_JDBC, model, "SmallA", "SmallB", teiidServer);		
+	public void sapIqJDBCtest() {
+			importHelper.importModelJDBC(PROJECT_NAME_JDBC, MODEL_NAME_SAP_IQ, ConnectionProfileConstants.SAP_IQ, "bqt-server/TABLE/SmallA,bqt-server/TABLE/SmallB", false);
+			importHelper.checkImportedTablesInModelJDBC(PROJECT_NAME_JDBC, MODEL_NAME_SAP_IQ, "SmallA", "SmallB", teiidServer);
 	}
 	
 }

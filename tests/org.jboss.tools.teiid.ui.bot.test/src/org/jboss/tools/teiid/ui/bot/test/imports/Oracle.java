@@ -53,6 +53,10 @@ public class Oracle {
 	private static final String UPDATE_DISALLOW_QUERY = new ResourceFileHelper().getSql("JDBCImportWizardTest/disallowUpdateBook").replaceAll("\r|\n", " ");
 	private static final String UPDATE_DEFAULT_QUERY = new ResourceFileHelper().getSql("JDBCImportWizardTest/updateDefault").replaceAll("\r|\n", " ");
 
+    private static final String MODEL_NAME_ORACLE_11_G = "oracle11gModel";
+    private static final String MODEL_NAME_ORACLE_11_G_BOOKS = "oracle11gModelPackage";
+    private static final String MODEL_NAME_ORACLE_12 = "oracle12cModel";
+
 	@Before
 	public void before() {
 		if (new ShellMenuItem(new WorkbenchShell(), "Project", "Build Automatically").isSelected()) {
@@ -70,31 +74,40 @@ public class Oracle {
 	
 	@After
 	public void after(){
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + MODEL_NAME_ORACLE_11_G);
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + MODEL_NAME_ORACLE_11_G + "_DS");
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/Check_" + MODEL_NAME_ORACLE_11_G);
+
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + MODEL_NAME_ORACLE_11_G_BOOKS);
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + MODEL_NAME_ORACLE_11_G_BOOKS + "_DS");
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/Check_" + MODEL_NAME_ORACLE_11_G_BOOKS);
+
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + MODEL_NAME_ORACLE_12);
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + MODEL_NAME_ORACLE_12 + "_DS");
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/Check_" + MODEL_NAME_ORACLE_12);
+
 		new ModelExplorer().deleteAllProjectsSafely();
 	}	
 
 	@Test
 	public void oracle11gJDBCtest() {
-		String model = "oracle11gModel";
-		importHelper.importModelJDBC(PROJECT_NAME_JDBC, model, ConnectionProfileConstants.ORACLE_11G_BQT2, "BQT2/TABLE/SMALLA,BQT2/TABLE/SMALLB", false);
-		new RelationalModelEditor(model + ".xmi").save();
-		importHelper.checkImportedTablesInModelJDBC(PROJECT_NAME_JDBC, model, "SMALLA", "SMALLB", teiidServer);
+		importHelper.importModelJDBC(PROJECT_NAME_JDBC, MODEL_NAME_ORACLE_11_G, ConnectionProfileConstants.ORACLE_11G_BQT2, "BQT2/TABLE/SMALLA,BQT2/TABLE/SMALLB", false);
+		new RelationalModelEditor(MODEL_NAME_ORACLE_11_G + ".xmi").save();
+		importHelper.checkImportedTablesInModelJDBC(PROJECT_NAME_JDBC, MODEL_NAME_ORACLE_11_G, "SMALLA", "SMALLB", teiidServer);
 	}
 	
 	@Test
 	public void oracle11gPackageJDBCtest() {
-		String model = "oracle11gModelPackage";
-		importHelper.importModelJDBC(PROJECT_NAME_JDBC, model, ConnectionProfileConstants.ORACLE_11G_BOOKS, "BOOKS/procedure/REMOVE_AUTHOR2", true);
-		new RelationalModelEditor(model + ".xmi").save();
-		importHelper.checkImportedProcedureInModelJDBC(PROJECT_NAME_JDBC, model,"REMOVE_AUTHOR2", teiidServer, "90" );
+		importHelper.importModelJDBC(PROJECT_NAME_JDBC, MODEL_NAME_ORACLE_11_G_BOOKS, ConnectionProfileConstants.ORACLE_11G_BOOKS, "BOOKS/procedure/REMOVE_AUTHOR2", true);
+		new RelationalModelEditor(MODEL_NAME_ORACLE_11_G_BOOKS + ".xmi").save();
+		importHelper.checkImportedProcedureInModelJDBC(PROJECT_NAME_JDBC, MODEL_NAME_ORACLE_11_G_BOOKS,"REMOVE_AUTHOR2", teiidServer, "90" );
 	}
 
 	@Test
 	public void oracle12cJDBCtest() {
-		String model = "oracle12cModel";
-		importHelper.importModelJDBC(PROJECT_NAME_JDBC, model, ConnectionProfileConstants.ORACLE_12C_BQT, "DV/TABLE/SMALLA,DV/TABLE/SMALLB", false);
-		new RelationalModelEditor(model + ".xmi").save();
-		importHelper.checkImportedTablesInModelJDBC(PROJECT_NAME_JDBC, model, "SMALLA", "SMALLB", teiidServer);
+		importHelper.importModelJDBC(PROJECT_NAME_JDBC, MODEL_NAME_ORACLE_12, ConnectionProfileConstants.ORACLE_12C_BQT, "DV/TABLE/SMALLA,DV/TABLE/SMALLB", false);
+		new RelationalModelEditor(MODEL_NAME_ORACLE_12 + ".xmi").save();
+		importHelper.checkImportedTablesInModelJDBC(PROJECT_NAME_JDBC, MODEL_NAME_ORACLE_12, "SMALLA", "SMALLB", teiidServer);
 	}
 	
 	@Test
@@ -102,16 +115,16 @@ public class Oracle {
 		Map<String,String> teiidImporterProperties = new HashMap<String, String>();
 		teiidImporterProperties.put(TeiidConnectionImportWizard.IMPORT_PROPERTY_TABLE_NAME_PATTERN, "SMALL%");
 		teiidImporterProperties.put(TeiidConnectionImportWizard.IMPORT_PROPERTY_SCHEMA_PATTERN, "BQT2");
-		importHelper.importModelTeiid(PROJECT_NAME_TEIID, ConnectionProfileConstants.ORACLE_11G_BQT2, "oracle11gModel", teiidImporterProperties,teiidServer);
-		importHelper.checkImportedModelTeiid(PROJECT_NAME_TEIID, "oracle11gModel", "SMALLA", "SMALLB");
+		importHelper.importModelTeiid(PROJECT_NAME_TEIID, ConnectionProfileConstants.ORACLE_11G_BQT2, MODEL_NAME_ORACLE_11_G, teiidImporterProperties,teiidServer);
+		importHelper.checkImportedModelTeiid(PROJECT_NAME_TEIID, MODEL_NAME_ORACLE_11_G, "SMALLA", "SMALLB");
 	}
 
 	@Test
 	public void oracle12cTeiidTest() {
 		Map<String,String> teiidImporterProperties = new HashMap<String, String>();
 		teiidImporterProperties.put(TeiidConnectionImportWizard.IMPORT_PROPERTY_TABLE_NAME_PATTERN, "SMALL%");
-		importHelper.importModelTeiid(PROJECT_NAME_TEIID, ConnectionProfileConstants.ORACLE_12C_BQT, "oracle12cModel", teiidImporterProperties, teiidServer);
-		importHelper.checkImportedModelTeiid(PROJECT_NAME_TEIID, "oracle12cModel", "SMALLA", "SMALLB");
+		importHelper.importModelTeiid(PROJECT_NAME_TEIID, ConnectionProfileConstants.ORACLE_12C_BQT, MODEL_NAME_ORACLE_12, teiidImporterProperties, teiidServer);
+		importHelper.checkImportedModelTeiid(PROJECT_NAME_TEIID, MODEL_NAME_ORACLE_12, "SMALLA", "SMALLB");
 	}	
 	@Test
 	/* Test if updatable value is set correctly after import */

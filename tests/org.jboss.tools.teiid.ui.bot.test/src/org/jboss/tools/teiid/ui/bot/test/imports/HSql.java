@@ -45,7 +45,7 @@ public class HSql {
 		new TeiidDesignerPreferencePage(preferences).setTeiidConnectionImporterTimeout(240);
 		new ModelExplorer().importProject(PROJECT_NAME_TEIID);
 		new ModelExplorer().selectItem(PROJECT_NAME_TEIID);
-		new ServersViewExt().refreshServer(teiidServer.getName());
+		//new ServersViewExt().refreshServer(teiidServer.getName());
 		importHelper = new ImportHelper();
 	}
 	
@@ -72,5 +72,6 @@ public class HSql {
 				.finish();
 		
 		importHelper.checkImportedModelTeiid(PROJECT_NAME_TEIID, modelName, "CUSTOMER");
+		new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + ConnectionProfileConstants.HSQLDB);
 	}
 }

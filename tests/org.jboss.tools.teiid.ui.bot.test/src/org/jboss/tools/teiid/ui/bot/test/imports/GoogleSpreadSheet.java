@@ -61,8 +61,8 @@ public class GoogleSpreadSheet {
 
 	@Test
 	public void googleSpreadSheetTeiidTest() {
-		String modelName = "GoogleSpreadSheetModel";		
-		new ServersViewExt().deleteDatasource(teiidServer.getName(), "googleSpreadSheetDS");
+		String modelName = "GoogleSpreadSheetModel";
+		new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/googleSpreadSheetDS");
 
 		Properties googleDsProperties = teiidServer.getServerConfig()
 				.getConnectionProfile(ConnectionProfileConstants.GOOGLE_SPREADSHEET).asProperties();
@@ -94,5 +94,7 @@ public class GoogleSpreadSheet {
 		
 		assertTrue(new ModelExplorer().containsItem(PROJECT_NAME_TEIID,modelName + ".xmi", "smallb", "datevalue : date"));
 		assertTrue(new ModelExplorer().containsItem(PROJECT_NAME_TEIID,modelName + ".xmi", "smallb", "timestampvalue : timestamp"));
-	}	
+
+		new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/googleSpreadSheetDS");
+	}
 }

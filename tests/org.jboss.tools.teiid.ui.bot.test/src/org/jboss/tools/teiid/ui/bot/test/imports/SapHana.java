@@ -116,5 +116,7 @@ public class SapHana {
 				.finish();
 		
 		importHelper.checkImportedModelTeiid(PROJECT_NAME_TEIID, modelName, "SMALLA", "SMALLB");
+
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + ConnectionProfileConstants.SAP_HANA);
 	}
 }

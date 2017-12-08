@@ -62,7 +62,7 @@ public class Excel {
 	@Test
 	public void excelTeiidTest() {
 		String modelName = "ExcelModel";		
-		new ServersViewExt().deleteDatasource(teiidServer.getName(), "excelDS");
+		new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/excelDS");
 
 		Properties excelDsProperties = teiidServer.getServerConfig()
 				.getConnectionProfile(ConnectionProfileConstants.EXCEL_SMALLA).asProperties();
@@ -88,5 +88,6 @@ public class Excel {
 		assertTrue(new ModelExplorer().containsItem(PROJECT_NAME_TEIID,modelName + ".xmi", "Sheet1"));
 		assertTrue(new ModelExplorer().containsItem(PROJECT_NAME_TEIID,modelName + ".xmi", "Sheet1", "ROW_ID : int"));
 		assertTrue(new ModelExplorer().containsItem(PROJECT_NAME_TEIID,modelName + ".xmi", "Sheet1", "StringNum : string"));
+		new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/excelDS");
 	}
 }

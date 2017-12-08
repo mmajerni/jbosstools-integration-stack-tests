@@ -57,6 +57,9 @@ public class Vertica {
 	
 	@After
 	public void after(){
+	    new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + ConnectionProfileConstants.VERTICA);
+	    new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + ConnectionProfileConstants.VERTICA + "_DS");
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/Check_" + ConnectionProfileConstants.VERTICA);
 		new ModelExplorer().deleteAllProjectsSafely();
 	}
 	

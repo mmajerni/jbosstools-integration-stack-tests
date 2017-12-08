@@ -59,26 +59,33 @@ public class Db2 {
 	
 	
 	@After
-	public void after(){
+    public void after(){
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + ConnectionProfileConstants.DB2_101_BQT);
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + ConnectionProfileConstants.DB2_101_BQT + "_DS");
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/Check_" + ConnectionProfileConstants.DB2_101_BQT);
+
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + ConnectionProfileConstants.DB2_97_BQT2);
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + ConnectionProfileConstants.DB2_97_BQT2 + "_DS");
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/Check_" + ConnectionProfileConstants.DB2_97_BQT2);
 		new ModelExplorer().deleteAllProjectsSafely();
 	}
 	
 	@Test
 	public void db2101JDBCtest() {
-		String model = "db2101Model";
+		String model = "db2_101_bqt";
 		importHelper.importModelJDBC(PROJECT_NAME_JDBC, model, ConnectionProfileConstants.DB2_101_BQT, "BQT/TABLE/SMALLA,BQT/TABLE/SMALLB", false);
 		new RelationalModelEditor(model + ".xmi").save();
-		importHelper.checkImportedTablesInModelJDBC(PROJECT_NAME_JDBC, model, "SMALLA", "SMALLB", teiidServer);
-		checkDatatypes(model);		
+		importHelper.checkImportedTablesInModelJDBC(PROJECT_NAME_JDBC, ConnectionProfileConstants.DB2_101_BQT, "SMALLA", "SMALLB", teiidServer);
+		checkDatatypes(ConnectionProfileConstants.DB2_101_BQT);
 	}
 	
 	@Test
 	public void db297JDBCtest() {
-		String model = "db297Model";
+		String model = "db2_97_bqt2";
 		importHelper.importModelJDBC(PROJECT_NAME_JDBC, model, ConnectionProfileConstants.DB2_97_BQT2, "BQT2/TABLE/SMALLA,BQT2/TABLE/SMALLB", false);
 		new RelationalModelEditor(model + ".xmi").save();
-		importHelper.checkImportedTablesInModelJDBC(PROJECT_NAME_JDBC, model, "SMALLA", "SMALLB", teiidServer);
-		checkDatatypes(model);
+		importHelper.checkImportedTablesInModelJDBC(PROJECT_NAME_JDBC, ConnectionProfileConstants.DB2_97_BQT2, "SMALLA", "SMALLB", teiidServer);
+		checkDatatypes(ConnectionProfileConstants.DB2_97_BQT2);
 	}
 	
 	@Test

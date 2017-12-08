@@ -60,7 +60,7 @@ public class MongoDB {
 	@Test
 	public void mongoDBteiidTest() {
 		String modelName = "mongoDB";
-		new ServersViewExt().deleteDatasource(teiidServer.getName(), "mongodbDS");
+		new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/mongodbDS");
 		
 		Properties apacheProps = teiidServer.getServerConfig().getConnectionProfile("mongo_db").asProperties();
 
@@ -87,5 +87,6 @@ public class MongoDB {
 				.finish();		
 		
 		importHelper.checkImportedModelTeiid(PROJECT_NAME_TEIID, modelName, "smalla", "smallb");
+		new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/mongodbDS");
 	}	
 }

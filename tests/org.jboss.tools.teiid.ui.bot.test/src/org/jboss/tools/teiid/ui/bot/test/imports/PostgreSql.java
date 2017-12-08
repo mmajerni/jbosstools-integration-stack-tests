@@ -41,6 +41,9 @@ public class PostgreSql {
 	private static final String PROJECT_NAME_JDBC = "jdbcImportTest";
 	private static final String PROJECT_NAME_TEIID = "TeiidConnImporter";
 
+    private static final String MODEL_NAME_POSTGRESQL_84 = "postgresql84Model";
+    private static final String MODEL_NAME_POSTGRESQL_92 = "postgresql92Model";
+
 	@Before
 	public void before() {
 		if (new ShellMenuItem(new WorkbenchShell(), "Project", "Build Automatically").isSelected()) {
@@ -58,23 +61,29 @@ public class PostgreSql {
 	
 	@After
 	public void after(){
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + MODEL_NAME_POSTGRESQL_84);
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + MODEL_NAME_POSTGRESQL_84 + "_DS");
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/Check_" + MODEL_NAME_POSTGRESQL_84);
+
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + MODEL_NAME_POSTGRESQL_92);
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + MODEL_NAME_POSTGRESQL_92 + "_DS");
+        new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/Check_" + MODEL_NAME_POSTGRESQL_92);
+
 		new ModelExplorer().deleteAllProjectsSafely();
 	}	
 
 	@Test
 	public void postgresql84JDBCtest() {
-		String model = "postgresql84Model";
-		importHelper.importModelJDBC(PROJECT_NAME_JDBC, model, ConnectionProfileConstants.POSTGRESQL_84_BQT2, "public/TABLE/smalla,public/TABLE/smallb", false);
-		new RelationalModelEditor(model + ".xmi").save();
-		importHelper.checkImportedTablesInModelJDBC(PROJECT_NAME_JDBC, model, "smalla", "smallb", teiidServer);
+		importHelper.importModelJDBC(PROJECT_NAME_JDBC, MODEL_NAME_POSTGRESQL_84, ConnectionProfileConstants.POSTGRESQL_84_BQT2, "public/TABLE/smalla,public/TABLE/smallb", false);
+		new RelationalModelEditor(MODEL_NAME_POSTGRESQL_84 + ".xmi").save();
+		importHelper.checkImportedTablesInModelJDBC(PROJECT_NAME_JDBC, MODEL_NAME_POSTGRESQL_84, "smalla", "smallb", teiidServer);
 	}
 
 	@Test
 	public void postgresql92JDBCtest() {
-		String model = "postgresql92Model";
-		importHelper.importModelJDBC(PROJECT_NAME_JDBC, model, ConnectionProfileConstants.POSTGRESQL_92_DVQE, "public/TABLE/smalla,public/TABLE/smallb", false);
-		new RelationalModelEditor(model + ".xmi").save();
-		importHelper.checkImportedTablesInModelJDBC(PROJECT_NAME_JDBC, model, "smalla", "smallb", teiidServer);
+		importHelper.importModelJDBC(PROJECT_NAME_JDBC, MODEL_NAME_POSTGRESQL_92, ConnectionProfileConstants.POSTGRESQL_92_DVQE, "public/TABLE/smalla,public/TABLE/smallb", false);
+		new RelationalModelEditor(MODEL_NAME_POSTGRESQL_92 + ".xmi").save();
+		importHelper.checkImportedTablesInModelJDBC(PROJECT_NAME_JDBC, MODEL_NAME_POSTGRESQL_92, "smalla", "smallb", teiidServer);
 	}
 	
 	@Test
@@ -82,8 +91,8 @@ public class PostgreSql {
 		Map<String,String> teiidImporterProperties = new HashMap<String, String>();
 		teiidImporterProperties.put(TeiidConnectionImportWizard.IMPORT_PROPERTY_TABLE_NAME_PATTERN, "small%");
 		teiidImporterProperties.put(TeiidConnectionImportWizard.IMPORT_PROPERTY_SCHEMA_PATTERN, "%public%");
-		importHelper.importModelTeiid(PROJECT_NAME_TEIID, ConnectionProfileConstants.POSTGRESQL_84_BQT2, "postgresql84Model", teiidImporterProperties, TimePeriod.VERY_LONG, teiidServer);
-		importHelper.checkImportedModelTeiid(PROJECT_NAME_TEIID, "postgresql84Model", "smalla", "smallb");
+		importHelper.importModelTeiid(PROJECT_NAME_TEIID, ConnectionProfileConstants.POSTGRESQL_84_BQT2, MODEL_NAME_POSTGRESQL_84, teiidImporterProperties, TimePeriod.VERY_LONG, teiidServer);
+		importHelper.checkImportedModelTeiid(PROJECT_NAME_TEIID, MODEL_NAME_POSTGRESQL_84, "smalla", "smallb");
 	}
 
 	@Test
@@ -92,7 +101,7 @@ public class PostgreSql {
 		teiidImporterProperties.put(TeiidConnectionImportWizard.IMPORT_PROPERTY_TABLE_NAME_PATTERN,  "small%");
 		teiidImporterProperties.put(TeiidConnectionImportWizard.IMPORT_PROPERTY_SCHEMA_PATTERN, "public");
 		teiidImporterProperties.put(TeiidConnectionImportWizard.IMPORT_PROPERTY_CATALOG, "dvqe");
-		importHelper.importModelTeiid(PROJECT_NAME_TEIID, ConnectionProfileConstants.POSTGRESQL_92_DVQE, "postgresql92Model", teiidImporterProperties, TimePeriod.VERY_LONG, teiidServer);
-		importHelper.checkImportedModelTeiid(PROJECT_NAME_TEIID, "postgresql92Model", "smalla", "smallb");
+		importHelper.importModelTeiid(PROJECT_NAME_TEIID, ConnectionProfileConstants.POSTGRESQL_92_DVQE, MODEL_NAME_POSTGRESQL_92, teiidImporterProperties, TimePeriod.VERY_LONG, teiidServer);
+		importHelper.checkImportedModelTeiid(PROJECT_NAME_TEIID, MODEL_NAME_POSTGRESQL_92, "smalla", "smallb");
 	}
 }

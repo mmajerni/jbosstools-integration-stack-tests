@@ -39,6 +39,8 @@ public class Dv6 {
 	private static final String PROJECT_NAME_JDBC = "jdbcImportTest";	
 	private static final String PROJECT_NAME_TEIID = "TeiidConnImporter";
 
+	private static final String MODEL_NAME = ConnectionProfileConstants.DV6_DS1;
+
 	@Before
 	public void before() {
 		if (new ShellMenuItem(new WorkbenchShell(), "Project", "Build Automatically").isSelected()) {
@@ -56,22 +58,24 @@ public class Dv6 {
 	
 	@After
 	public void after(){
+	    new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + MODEL_NAME);
+	    new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + MODEL_NAME + "_DS");
+	    new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/Check_" + MODEL_NAME);
 		new ModelExplorer().deleteAllProjectsSafely();
 	}	
 
 	@Test
 	public void dv6JDBCtest() {
-		String model = "dv6Model";
-		importHelper.importModelJDBC(PROJECT_NAME_JDBC, model, ConnectionProfileConstants.DV6_DS1, "PUBLIC/PUBLIC/TABLE/STATUS,PUBLIC/PUBLIC/TABLE/PARTS", false);
-		new RelationalModelEditor(model + ".xmi").save();
-		importHelper.checkImportedTablesInModelJDBC(PROJECT_NAME_JDBC, model, "STATUS", "PARTS", teiidServer);
+		importHelper.importModelJDBC(PROJECT_NAME_JDBC, MODEL_NAME, ConnectionProfileConstants.DV6_DS1, "PUBLIC/PUBLIC/TABLE/STATUS,PUBLIC/PUBLIC/TABLE/PARTS", false);
+		new RelationalModelEditor(MODEL_NAME + ".xmi").save();
+		importHelper.checkImportedTablesInModelJDBC(PROJECT_NAME_JDBC, MODEL_NAME, "STATUS", "PARTS", teiidServer);
 	}
 	
 	@Test
 	public void dv6TeiidTest() {
 		Map<String,String> teiidImporterProperties = new HashMap<String, String>();
 		teiidImporterProperties.put(TeiidConnectionImportWizard.IMPORT_PROPERTY_TABLE_NAME_PATTERN, "");
-		importHelper.importModelTeiid(PROJECT_NAME_TEIID,ConnectionProfileConstants.DV6_DS1, "dv6Model", teiidImporterProperties,teiidServer);
-		importHelper.checkImportedModelTeiid(PROJECT_NAME_TEIID, "dv6Model", "STATUS", "PARTS");
+		importHelper.importModelTeiid(PROJECT_NAME_TEIID,ConnectionProfileConstants.DV6_DS1, MODEL_NAME, teiidImporterProperties,teiidServer);
+		importHelper.checkImportedModelTeiid(PROJECT_NAME_TEIID, MODEL_NAME, "STATUS", "PARTS");
 	}
 }

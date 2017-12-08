@@ -60,7 +60,7 @@ public class SalesForce {
 	public void salesforceTeiidTest() {
 	    Assume.assumeFalse(System.getProperty("os.name").toLowerCase().startsWith("mac")); //this method works in Mac only local machine 
 		String modelName = "sfImp";
-		new ServersViewExt().deleteDatasource(teiidServer.getName(), "sfDS");
+		new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/sfDS");
 		
 		Properties sfProps = teiidServer.getServerConfig().getConnectionProfile("salesforce").asProperties();
 
@@ -83,6 +83,7 @@ public class SalesForce {
 				.finish();
 		
 		importHelper.checkImportedModelTeiid(PROJECT_NAME_TEIID, modelName, "Account", "Vote", "Profile");
+		new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/sfDS");
 	}
 	
 }
