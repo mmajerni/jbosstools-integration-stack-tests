@@ -6,7 +6,10 @@ import org.eclipse.reddeer.junit.requirement.inject.InjectRequirement;
 import org.eclipse.reddeer.junit.runner.RedDeerSuite;
 import org.eclipse.reddeer.requirements.openperspective.OpenPerspectiveRequirement.OpenPerspective;
 import org.eclipse.reddeer.requirements.server.ServerRequirementState;
+import org.eclipse.reddeer.swt.condition.ShellIsAvailable;
+import org.eclipse.reddeer.swt.impl.button.OkButton;
 import org.eclipse.reddeer.swt.impl.menu.ShellMenuItem;
+import org.eclipse.reddeer.swt.impl.shell.DefaultShell;
 import org.eclipse.reddeer.workbench.impl.shell.WorkbenchShell;
 import org.eclipse.reddeer.workbench.ui.dialogs.WorkbenchPreferenceDialog;
 import org.jboss.tools.teiid.reddeer.ImportHelper;
@@ -34,6 +37,8 @@ public class Odata {
 
 	private static final String PROJECT_NAME_TEIID = "TeiidConnImporter";
 
+	private static final String DATASOURCE_NAME = "odataDS";
+
 	@Before
 	public void before() {
 		if (new ShellMenuItem(new WorkbenchShell(), "Project", "Build Automatically").isSelected()) {
@@ -52,34 +57,39 @@ public class Odata {
 	@After
 	public void after(){
 		new ModelExplorer().deleteAllProjectsSafely();
+		
+		new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + DATASOURCE_NAME);
 	}
 
 	@Test
 	public void odataTeiidTest() {
 		String modelName = "OdataModel";
-		String dataSourceName = "odataDS";
 
 		TeiidConnectionImportWizard.openWizard()
 				.createNewDataSource()
-				.setName(dataSourceName)
+				.setName(DATASOURCE_NAME)
 				.setDriver("webservice")
 				.setImportPropertie(CreateDataSourceDialog.DATASOURCE_PROPERTY_URL, "http://services.odata.org/Northwind/Northwind.svc")
 				.finish();
 		TeiidConnectionImportWizard.getInstance()
-				.selectDataSource("java:/" + dataSourceName)
+				.selectDataSource("java:/" + DATASOURCE_NAME)
 				.nextPage()
 				.setTranslator("odata")
 				.nextPage()
 				.setModelName(modelName)
 				.setProject(PROJECT_NAME_TEIID)
 				.nextPageWithWait()
-				.nextPageWithWait()
-				.finish();
+				.nextPageWithWait();
+
+        if (new ShellIsAvailable("Translator Required").test()) {
+            new OkButton(new DefaultShell("Translator Required")).click();
+        }
+
+        TeiidConnectionImportWizard.getInstance()
+                .finish();
 
 		assertTrue(new ModelExplorer().containsItem(PROJECT_NAME_TEIID,modelName + ".xmi", "Customers"));
 		assertTrue(new ModelExplorer().containsItem(PROJECT_NAME_TEIID,modelName + ".xmi", "Customers", "CustomerID : string(5)"));
 		assertTrue(new ModelExplorer().containsItem(PROJECT_NAME_TEIID,modelName + ".xmi", "Employees", "EmployeeID : int"));
-
-		new ServersViewExt().deleteDatasource(teiidServer.getName(), "java:/" + dataSourceName);
 	}
 }
